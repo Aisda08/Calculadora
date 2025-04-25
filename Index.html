@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>Calculadora</title>
+    <style>
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 4.5rem;
+            background-color: #292A30;
+            border-bottom: 0.1rem solid #4b4d58;
+        }
+        header img {
+            height: 3rem;
+        }
+
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+            margin: 0;
+
+            font-family: "Source Sans 3", Arial, Helvetica, sans-serif;
+            background-color: #262626;
+        }
+        input {
+            font-size: 24px;
+            outline: none;
+            cursor: default;
+            width: 98%;
+            height: 3rem;
+            font-size: 30px;
+        }
+        td > button {
+            background-color: #292A30;
+            box-sizing: border-box;
+            color: white;
+            border: 2px solid #6D7080;
+        }
+        .calculator-buttons > td > button {
+            width: 6rem ;
+            height: 5rem;
+            font-size: 30px;
+            font-weight: 600;
+        }
+        td > button:hover {
+            background-color: #343c5a;
+            cursor: pointer;
+        }
+
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            height: 5rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #292A30;
+            border-top: 1px solid #4b4d58;
+            color: white;
+            font-weight: 100;
+            font-size: 20px;
+        }
+        .footer-matricula {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header><img src="https://i.ibb.co/mCQ9k8QQ/baixados-1.png"></header>
+    
+    <table>
+        <tr>
+            <td colspan="4">
+                <input type="text" readonly id="display">
+            </td>
+        </tr>
+        <tr class="calculator-buttons">
+            <td><button onclick="addToDisplay(7)">7</button></td>
+            <td><button onclick="addToDisplay(8)">8</button></td>
+            <td><button onclick="addToDisplay(9)">9</button></td>
+            <td><button onclick="addToDisplay('÷')">÷</button></td>
+        </tr>
+        <tr class="calculator-buttons">
+            <td><button onclick="addToDisplay(4)">4</button></td>
+            <td><button onclick="addToDisplay(5)">5</button></td>
+            <td><button onclick="addToDisplay(6)">6</button></td>
+            <td><button onclick="addToDisplay('×')">×</button></td>
+        </tr>
+        <tr class="calculator-buttons">
+            <td><button onclick="addToDisplay(1)">1</button></td>
+            <td><button onclick="addToDisplay(2)">2</button></td>
+            <td><button onclick="addToDisplay(3)">3</button></td>
+            <td><button onclick="addToDisplay('-')">-</button></td>
+        </tr>
+        <tr class="calculator-buttons">
+            <td><button onclick="addToDisplay(0)">0</button></td>
+            <td><button onclick="resetDisplay()">C</button></td>
+            <td><button onclick="displayResult()">=</button></td>
+            <td><button onclick="addToDisplay('+')">+</button></td>
+        </tr>
+    </table>
+
+    <footer>
+        <div>Gabriel Dantas de Oliveira</div>
+        <div class="footer-matricula">22131003-7</div>
+    </footer>
+
+    <script> 
+        function isNumeric(n) {
+            return !isNaN(n)
+        }
+
+
+        function addToDisplay(x) {
+            if (!isNumeric(x) && !isNumeric(conta.slice(-1))) {
+                    conta = conta.slice(0, -1)
+            }
+            
+            conta += x
+            display.value = conta
+        }
+
+
+        function resetDisplay() {
+            conta = ""
+            display.value = conta
+        }
+
+
+        async function displayResult() {
+            const resposta = await fetch("http://localhost:3000/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ expressao: conta })
+            });
+
+            const dados = await resposta.json();
+
+            if (dados.resultado !== undefined) {
+                conta = String(dados.resultado);
+            } else {
+                conta = "Erro";
+            }
+
+            display.value = conta;
+        }
+
+        let display = document.getElementById("display")
+        let conta = ""
+        let infixa = true
+    </script>
+</body>
+</html>
